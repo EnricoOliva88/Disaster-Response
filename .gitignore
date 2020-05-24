@@ -1,1 +1,2 @@
-disaster_df.db
+*.db
+*.plk

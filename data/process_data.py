@@ -11,7 +11,7 @@ def load_data(messages_filepath, categories_filepath):
     - messages_filepath: filepath of csv file with messages
     - categories_filepath: filepath of csv file with categories
     
-    Outs:
+    Returns:
     - df: pandas dataframe with messages and categories
     
     """
@@ -26,6 +26,15 @@ def load_data(messages_filepath, categories_filepath):
     return df
 
 def clean_data(df):
+    """Clean data by splitting the categories feature in several features
+    indicating if a certain tag category is related to the message.
+    
+    Args:
+        df: Dataframe that was obtained merging messages and categories
+        
+    Returns:
+        df: Cleaned dataframe
+    """
         
     # Split `categories` into separate category columns.
     df_categories = df.categories.str.split(pat = ";", expand=True)
@@ -57,12 +66,19 @@ def clean_data(df):
 
 
 def save_data(df, database_filename):
+    """ Save dataframe in a sql database
     
-    engine = create_engine('sqlite:///disaster_df.db')
-    df.to_sql('disaster_df', engine, index=False)
+    Args:
+        df: dataframe to be saved
+        database_filename: database filename (possibly including relative path)
+    """
+    engine = create_engine('sqlite:///'+database_filename)
+    df.to_sql(database_filename, engine, index=False, if_exists='append')
 
 
 def main():
+    """Main function performing loading, cleaning and saving of data
+    """
     if len(sys.argv) == 4:
 
         messages_filepath, categories_filepath, database_filepath = sys.argv[1:]
